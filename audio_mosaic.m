@@ -6,7 +6,7 @@ test = 0; % if this is set to 1, the script will try to re-create the source per
 
 targetError = 0.0001;
 
-audioPath = '/Users/aboik/Documents/MATLAB/audio_mosaic 2/audio/';
+audioPath = '/Users/aboik/Documents/MATLAB/audio_mosaic/audio/';
 sourceAudioName = 'thriller_sample.wav';
 targetAudioName = 'gangnam.wav'; % overridden if test = 1
 
