@@ -1,0 +1,181 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXFileReference section */
+		BC52717916AE733E001769F5 /* mosaic.cpp */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = mosaic.cpp; sourceTree = "<group>"; tabWidth = 2; };
+		BC52717A16AE733E001769F5 /* mosaic.h */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = mosaic.h; sourceTree = "<group>"; tabWidth = 2; };
+		BC52717B16AE830D001769F5 /* sndfile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = sndfile.h; path = /usr/local/include/sndfile.h; sourceTree = "<absolute>"; };
+		BC52717C16AE830D001769F5 /* sndfile.hh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = sndfile.hh; path = /usr/local/include/sndfile.hh; sourceTree = "<absolute>"; };
+		BC52717D16AE8337001769F5 /* libsndfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsndfile.a; path = /usr/local/lib/libsndfile.a; sourceTree = "<absolute>"; };
+		BC52718316AE8AA9001769F5 /* audio_mosaic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.cpp.cpp; path = audio_mosaic.cpp; sourceTree = "<group>"; tabWidth = 2; };
+		BC52718416AE8AA9001769F5 /* audio_mosaic.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = audio_mosaic.h; sourceTree = "<group>"; tabWidth = 2; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		BC52716E16AE71A9001769F5 = {
+			isa = PBXGroup;
+			children = (
+				BC52717916AE733E001769F5 /* mosaic.cpp */,
+				BC52718316AE8AA9001769F5 /* audio_mosaic.cpp */,
+				BC52718416AE8AA9001769F5 /* audio_mosaic.h */,
+				BC52717A16AE733E001769F5 /* mosaic.h */,
+				BC52717E16AE8357001769F5 /* Libsndfile */,
+			);
+			sourceTree = "<group>";
+		};
+		BC52717E16AE8357001769F5 /* Libsndfile */ = {
+			isa = PBXGroup;
+			children = (
+				BC52717B16AE830D001769F5 /* sndfile.h */,
+				BC52717C16AE830D001769F5 /* sndfile.hh */,
+				BC52717D16AE8337001769F5 /* libsndfile.a */,
+			);
+			name = Libsndfile;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		BC52717F16AE87C7001769F5 /* Audio Mosaic */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = BC52718016AE87C7001769F5 /* Build configuration list for PBXLegacyTarget "Audio Mosaic" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/bin/make;
+			buildWorkingDirectory = "/Users/aboik/Documents/thesis/audio_mosaic/Audio Mosaic";
+			dependencies = (
+			);
+			name = "Audio Mosaic";
+			passBuildSettingsInEnvironment = 1;
+			productName = "Audio Mosaic";
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXProject section */
+		BC52717016AE71AA001769F5 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0450;
+			};
+			buildConfigurationList = BC52717316AE71AA001769F5 /* Build configuration list for PBXProject "Audio Mosaic" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = BC52716E16AE71A9001769F5;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				BC52717F16AE87C7001769F5 /* Audio Mosaic */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		BC52717516AE71AA001769F5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+			};
+			name = Debug;
+		};
+		BC52717616AE71AA001769F5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+			};
+			name = Release;
+		};
+		BC52718116AE87C7001769F5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		BC52718216AE87C7001769F5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BC52717316AE71AA001769F5 /* Build configuration list for PBXProject "Audio Mosaic" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BC52717516AE71AA001769F5 /* Debug */,
+				BC52717616AE71AA001769F5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BC52718016AE87C7001769F5 /* Build configuration list for PBXLegacyTarget "Audio Mosaic" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BC52718116AE87C7001769F5 /* Debug */,
+				BC52718216AE87C7001769F5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BC52717016AE71AA001769F5 /* Project object */;
+}
