@@ -27,24 +27,18 @@ end
 
 function noise = Noise(x, n)
     fprintf('firstx')
-    x
+    
     switch n
         case 0
             x = xor(fix(x*2^(-13)), x);
-            fprintf('x')
-            x
             noise = (1.0 - ( (x * (x * x * 15731 + 789221) + 1376312589) ...
                 & hex2dec('7fffffff')) / 1073741824.0);
         case 1
             x = fix(x*2^(-13)) ^ x;
-            fprintf('x')
-            x
             noise = (1.0 - ( (x * (x * x * 15809 + 789977) + 1376314783) ...
                 & hex2dec('7fffffff')) / 1097436863.0);
         case 2
             x = fix(x*2^(-13)) ^ x;
-            fprintf('x')
-            x
             noise = (1.0 - ( (x * (x * x * 16699 + 789713) + 1376313067) ...
                 & hex2dec('7fffffff')) / 1123550209.0);
         case 3
@@ -60,8 +54,6 @@ function noise = Noise(x, n)
             noise = (1.0 - ( (x * (x * x * 16609 + 789511) + 1376314811) ...
                 & hex2dec('7fffffff')) / 1457211193.0);
     end
-    fprintf('basenoise');
-    noise
 end
 
 function interpolation = Cosine_Interpolate(a, b, x)

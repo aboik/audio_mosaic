@@ -1,35 +1,66 @@
-%function reconstructedAudio = mosaic(targetError, windowSize, nDictionaryItems, ...
-%                                    forceIterations, numIterations, xfadeWidth,  ...
-%                                      perlin, snapToZeroCrossings)
-    clear all;
+function reconstructedAudio = mosaic_2(audioPath, source, target, settings, params, gParams)
+
 
     % settings
-
-    test = 0; % if this is set to 1, the script will try to re-create the source perfectly
-    perlin = 0; % if this is set to 1, perlin noise will be applied to the dictionary pointers
+    sourceAudioName = source;
+    targetAudioName = target;
+    test = settings(1, 1); % if this is set to 1, the script will try to re-create the source perfectly
+    perlin = settings(2, 1);% if this is set to 1, perlin noise will be applied to the dictionary pointers
                 % during reconstruction
-    snapToZeroCrossings = 0; % if this is set to 1, the dictionary pointers will snap to the
+    snapToZeroCrossings = settings(3, 1); % if this is set to 1, the dictionary pointers will snap to the
+                            % nearest zero-crossing during reconstruction
+    forceIterations = settings(4, 1);
+    numIterations = settings(5, 1);
+    targetError = settings(6, 1);
+    perlinNoiseRange = settings(7, 1); % max fluctation in header/tail pointer
+    zcRange = 100; % range to look for zero crossings (100 is about 2ms either way)
+    
+    xfadeWidth = params(1, 1);%  Number of samples in crossfade on either side of clip
+    windowSize = params(2, 1); % Change the multiplier to change window size
+    orig_windowSize = windowSize; % copy of windowSize
+    nDictionaryItems = params(3, 1); % Number of items in the dictionary (overridden if test = 1)
+    granular = gParams(1, 1); % choose whether to use a granular step in reconstruction
+    grainSize = gParams(2, 1); % must be a power of 2 and no larger than windowSize
+    grainRandomReorder = gParams(3, 1); % if True, randomly reorder the grains in a dictionary frame
+    grainConvBlend = gParams(4, 1); % if True, convolve multiple grains together
+    grainRandomRev = gParams(5, 1); % randomly reverse some of the grains
+    grainPitchShift = gParams(6, 1); % limits (in percent) of pitch shifting during granular synthesis
+    nWindowsInSrc = 1; % Length of dictionary clips in windows
+    sampleRate = 44100;
+   
+    
+    % ensure grainSize < windowSize and is a power of 2
+    if (grainSize > 0)
+        if (grainSize > windowSize || ~(bitand(grainSize, grainSize-1) == 0))
+            print "grainSize error";
+            exit;
+        end
+    end
+    %test = 0; % if this is set to 1, the script will try to re-create the source perfectly
+    %perlin = 0; % if this is set to 1, perlin noise will be applied to the dictionary pointers
+                % during reconstruction
+    %snapToZeroCrossings = 0; % if this is set to 1, the dictionary pointers will snap to the
                             % nearest zero-crossing during reconstruction
                 
-    perlinNoiseRange = 1000; % max fluctation in header/tail pointer
-    zcRange = 100; % range to look for zero crossings
-    forceIterations = 0;
-    numIterations = 0;
-    targetError = 0.001;
+    %perlinNoiseRange = 1000; % max fluctation in header/tail pointer
+    %zcRange = 400; % range to look for zero crossings (100 is about 2ms either way)
+    %forceIterations = 0;
+    %numIterations = 0;
+    %targetError = 0.0001;
 
-    audioPath = '/Users/aboik/Documents/MATLAB/audio_mosaic/audio/';
-    sourceAudioName = 'many_birds.wav';
-    targetAudioName = 'many_birds.wav'; % overridden if test = 1
+    %audioPath = '/Users/aboik/Documents/MATLAB/audio_mosaic/audio/';
+    %sourceAudioName = 'obama_dreams_sample_2.wav';
+    %targetAudioName = 'hbfs_shorter.wav'; % overridden if test = 1
 
     if (test)
         targetAudioName = sourceAudioName;
     end
-    xfadeWidth = 256;%  Number of samples in crossfade on either side of clip
-    windowSize = 1024*1; % Change the multiplier to change window size
-    orig_windowSize = windowSize; % copy of windowSize
-    nDictionaryItems = 1000; % Number of items in the dictionary (overridden if test = 1)
-    nWindowsInSrc = 1; % Length of dictionary clips in windows
-    sampleRate = 44100;
+    %xfadeWidth = 256;%  Number of samples in crossfade on either side of clip
+    %windowSize = 512*2; % Change the multiplier to change window size
+    %orig_windowSize = windowSize; % copy of windowSize
+    %nDictionaryItems = 1000; % Number of items in the dictionary (overridden if test = 1)
+    %nWindowsInSrc = 1; % Length of dictionary clips in windows
+    %sampleRate = 44100;
 
     % Load audio samples
     targetAudio = wavread(strcat(audioPath, targetAudioName));
@@ -72,7 +103,7 @@
     nBins = windowSize / 2 + 1;
     dictSpectGrams = zeros(nBins, nDictionaryItems, nWindowsInSrc);
 
- 
+
     for i = 1:nDictionaryItems
         tmpAudio = sourceAudio(dictPointers(i):(dictPointers(i)+nSamples-1));
         dictSpectGrams(:,i,:) = abs(spectrogram(tmpAudio, ...
@@ -89,7 +120,8 @@
     if(~forceIterations)
         while(~done)
             fprintf('i = %d\n', i);
-            [activations Yrecon score W] = fitactivations(targetSg, dictSpectGrams, activations);
+            [activations Yrecon score W] = fitactivations(targetSg, ...
+                dictSpectGrams, activations);
             fprintf('score = %d\n', score);
             scores(i) = score;
             if(i > 1)
@@ -110,7 +142,7 @@
     % Reconstruct the target audio using dictionary
     reconstructedAudio = zeros(windowSize * nReconstrWindows, 1);
 
-
+ 
     % There may be a faster way to do this
     for i = 1:nDictionaryItems
         if (mod(i,10) == 0)
@@ -125,11 +157,21 @@
         % Insert windowSize-1 zeros between each activation, so we can convolve
         tmp = [activation; zeros(orig_windowSize-1, length(activation))];
         expandedActivation = reshape(tmp, [], 1);
+        tmpAudio = sourceAudio(head:tail);
         
+        % Apply granular synthesis to entry
+        if (granular)
+            tmpAudio = granulate(tmpAudio, grainSize, grainRandomReorder, ...
+                grainConvBlend, grainRandomRev, grainPitchShift);
+        end
+            
+                
         % Apply Perlin noise to head and tail pointers
         if (perlin)
-            headNoise = perlinNoise(head, length(sourceAudio));
-            tailNoise = perlinNoise(tail, length(sourceAudio));
+            orig_head = head;
+            orig_tail = tail;
+            headNoise = perlinNoise(head);
+            tailNoise = perlinNoise(tail);
             if (rand(1) > 0.5)
                 head = int32(head + headNoise*perlinNoiseRange);
                 tail = int32(tail + tailNoise*perlinNoiseRange);
@@ -140,21 +182,38 @@
             % make sure we don't go out of bounds
             head = max(1, head);
             tail = min(length(sourceAudio), max(1,tail));
+            
+            if (granular)
+                if (head < orig_head)
+                    tmpAudio = sourceAudio(head:orig_head) + tmpAudio;
+                else
+                    tmpAudio = tmpAudio(head-orig_head:length(tmpAudio));
+                end
+                if (tail > orig_tail)
+                    tmpAudio = tmpAudio + sourceAudio(orig_tail:tail);
+                else
+                    tmpAudio = tmpAudio(0:orig_tail-tail);
+                end
+            end
         end
         
-        if (snapToZeroCrossings)
+        if (snapToZeroCrossings && granular)
+            % Find nearest zero-crossing of head
+            clip_head = findZeroCrossings(tmpAudio, 0, zcRange);
+            % Find nearest zero-crossing of tail
+            clip_tail = findZeroCrossing(tmpAudio, length(tmpAudio), zcRange);
+            tmpAudio = tmpAudio(clip_head:clip_tail); % limit audio head
+                                            % and tail to zero crossings
+        elseif (snapToZeroCrossings)
             % Find nearest zero-crossing of head
             head = findZeroCrossing(sourceAudio, head, zcRange);
             % Find nearest zero-crossing of tail
             tail = findZeroCrossing(sourceAudio, tail, zcRange);
+            tmpAudio = tmpAudio(head:tail);
         end
-        
-        tmpAudio = sourceAudio(head:tail);
         
         % change window size
         windowSize = length(tmpAudio);
-
-      
 
         % Create crossfade sections beyond the head and tail of the clip
         if (xfadeWidth > windowSize)
@@ -174,20 +233,6 @@
             fadeOut = zeros(halfWidth, 1);
         end
         
-          
-        % transpose to correct dimensions
-        %[m,n] = size(fadeOut);
-        %if m==1
-        %    fadeOut = fadeOut';
-        %end
-        %[m,n] = size(fadeIn);
-        %if m==1
-        %    fadeIn = fadeIn';
-        %end
-        %[m,n] = size(tmpAudio);
-        %if m==1
-        %    tmpAudio = tmpAudio';
-        %end
 
         % Create the crossfade shape
         rampIn  = ((0:(xfadeWidth-1))/xfadeWidth)';
@@ -219,5 +264,6 @@
 
     % Normalize the target audio and play result
     reconstructedAudio = reconstructedAudio / max(abs(reconstructedAudio));
-    soundsc(reconstructedAudio, sampleRate);
-    wavwrite(reconstructedAudio, sampleRate, 'audio_out.wav');
+    %soundsc(reconstructedAudio, sampleRate);
+    %wavwrite(reconstructedAudio, sampleRate, 'audio_out.wav');
+end
